@@ -1,0 +1,641 @@
+/* ===================================================
+   نمط موحد لشجرة عائلة حمو بن سليمان
+   الألوان: أخضر وذهبي — مطابق لـ the_main_page.html
+   =================================================== */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* الألوان الأساسية (من the_main_page.html) */
+  --bg: #187ba50c;               /* خلفية شفافة */
+  --surface: #ffffff;            /* أبيض */
+  --surface2: #e1f5ee;           /* أخضر فاتح جداً */
+  --surface3: #c6edd9;           /* أخضر فاتح متوسط */
+  --border: rgba(0,0,0,0.1);     /* شفاف */
+  --accent: #b8860b;             /* ذهبي داكن */
+  --accent2: #d4a843;            /* ذهبي فاتح */
+  --accent-light: rgba(184,134,11,0.1);
+  --text: #1a1a1a;               /* نص داكن */
+  --text2: #5a5a5a;              /* نص ثانوي */
+  --male: #0f6e56;               /* أخضر غامق (للرجال) */
+  --male-bg: rgba(15,110,86,0.1);
+  --female: #b8860b;             /* ذهبي (للنساء) */
+  --female-bg: rgba(184,134,11,0.1);
+  --couple-line: #d4a843;        /* خط الزواج ذهبي */
+  --shadow: 0 2px 12px rgba(0,0,0,.08);
+  --radius: 14px;
+}
+
+body {
+  font-family: 'Tajawal', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  direction: rtl;
+}
+
+/* ─── HEADER (أخضر) ─────────────────────────────── */
+.header {
+  background: linear-gradient(135deg, #0a3d2b 0%, #1a6b4a 50%, #0f5c3a 100%);
+  border-bottom: 3px solid var(--accent);
+  padding: 0 20px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+.header-logo {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 1.35rem;
+  color: #fff;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+}
+.header-actions { display: flex; gap: 8px; align-items: center; }
+
+/* ─── BUTTONS ────────────────────────────────────── */
+.btn {
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(27, 4, 4, 0.3);
+  background: rgba(255,255,255,0.15);
+  color: #070606;
+  font-family: 'Tajawal', sans-serif;
+  font-size: .85rem;
+  cursor: pointer;
+  transition: all .18s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+.btn:hover { background: rgba(255,255,255,0.25); border-color: var(--accent); color: #fff; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.primary:hover { background: var(--accent2); border-color: var(--accent2); }
+.btn.danger { background: #dc2626; border-color: #dc2626; color: #fff; }
+.btn.sm { padding: 4px 9px; font-size: .78rem; }
+.btn.icon-btn { padding: 7px; width: 34px; height: 34px; justify-content: center; border-radius: 8px; }
+
+/* ─── SEARCH ─────────────────────────────────────── */
+.search-wrap { position: relative; }
+.search-wrap input {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 8px;
+  padding: 7px 32px 7px 10px;
+  color: #fff;
+  font-size: .85rem;
+  width: 200px;
+  outline: none;
+  direction: rtl;
+}
+.search-wrap input::placeholder { color: rgba(255,255,255,0.7); }
+.search-wrap input:focus { border-color: var(--accent); background: rgba(255,255,255,0.25); }
+.search-results {
+  position: absolute;
+  top: 42px; left: 0;
+  width: 280px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  z-index: 200;
+  max-height: 300px;
+  overflow-y: auto;
+  display: none;
+}
+.search-results.visible { display: block; }
+.search-result-item {
+  padding: 10px 14px;
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  flex-direction: row-reverse;
+}
+.search-result-item:hover { background: var(--surface2); }
+
+/* ─── MAIN / TREE ────────────────────────────────── */
+.main { flex: 1; overflow: auto; }
+.tree-viewport {
+  min-height: calc(100vh - 60px);
+  padding: 40px 20px 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ─── COUPLE / CONNECTORS ────────────────────────── */
+.couple-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.couple-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  position: relative;
+}
+.marriage-line {
+  width: 44px;
+  height: 3px;
+  background: var(--couple-line);
+  flex-shrink: 0;
+}
+.wives-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+.connector-down {
+  width: 3px; height: 40px;
+  background: var(--accent);
+  margin: 0 auto;
+}
+.connector-up {
+  width: 3px; height: 26px;
+  background: transparent;
+  margin: 0 auto;
+}
+
+/* ─── SVG ARROWS (تلقائي من app.js) ─────────────── */
+.tree-level-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+.arrows-canvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 1;
+}
+
+/* ─── CHILDREN ROW ───────────────────────────────── */
+.children-row {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  position: relative;
+  max-width: 95vw;
+  margin-top: 8px;
+  padding-bottom: 10px;
+  scrollbar-width: none;
+}
+.children-row::-webkit-scrollbar { display: none; }
+.children-row .card { width: 100px; padding: 8px 5px; flex-shrink: 0; }
+.children-row .card-avatar { width: 44px; height: 44px; font-size: .9rem; border-radius: 50%; }
+.children-row .card-name { font-size: 0.72rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 84px; }
+.children-row .card-dates { font-size: 0.6rem; }
+.children-row .card-admin-btns .btn.sm { padding: 2px 5px; font-size: 0.65rem; }
+.children-row .deceased-badge,
+.children-row .wife-badge { font-size: 0.55rem; padding: 1px 4px; }
+
+/* ─── DEPTH-1 SIBLINGS ROW ───────────────────────── */
+.depth1-siblings-row {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow: visible;
+  gap: 6px;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  max-width: 98vw;
+  padding-bottom: 4px;
+  position: relative;
+}
+.depth1-siblings-row .couple-unit {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.depth1-siblings-row .couple-unit .card {
+  width: 100%;
+  min-width: 0;
+  padding: 7px 3px;
+  box-sizing: border-box;
+}
+.depth1-siblings-row .couple-unit .card-avatar {
+  width: clamp(28px, 5vw, 48px);
+  height: clamp(28px, 5vw, 48px);
+  font-size: clamp(.65rem, 1.5vw, 1.1rem);
+  border-radius: 50%;
+}
+.depth1-siblings-row .couple-unit .card-name {
+  font-size: clamp(.58rem, 1.2vw, .85rem);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.depth1-siblings-row .couple-unit .card-dates { font-size: clamp(.52rem, 1vw, .68rem); }
+.depth1-siblings-row .couple-unit .deceased-badge,
+.depth1-siblings-row .couple-unit .wife-badge { font-size: .52rem; padding: 1px 4px; }
+.depth1-siblings-row .couple-unit .card-admin-btns .btn.sm { padding: 2px 4px; font-size: .62rem; }
+
+/* ─── DEPTH-1 EXPANDED ───────────────────────────── */
+.depth1-expanded-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 4px;
+  padding: 14px 16px 16px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.07);
+  position: relative;
+  max-width: 95vw;
+}
+.depth1-expanded-unit::before {
+  content: '';
+  position: absolute;
+  top: -18px; left: 50%; transform: translateX(-50%);
+  width: 3px; height: 18px;
+  background: var(--accent);
+}
+
+/* ─── CARD (بطاقة الشخص) ─────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 15px 8px;
+  width: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all .22s;
+  position: relative;
+  box-shadow: var(--shadow);
+  flex-shrink: 0;
+}
+.card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+.card.selected { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+.card.deceased { opacity: .65; }
+.card.root { border-color: var(--accent); border-width: 2px; background: linear-gradient(135deg, #fff, #fdf8ee); }
+.card.wife-card {
+  background: linear-gradient(135deg, var(--surface), var(--female-bg));
+  border-color: var(--female);
+  border-style: dashed;
+  width: 114px;
+  padding: 10px 8px;
+}
+.card.wife-card:hover { border-style: solid; border-color: var(--female); }
+
+.card-avatar {
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  border: 2px solid var(--accent-light);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 700;
+  background: #f0f0f0;
+}
+.card-avatar.male   { background: var(--male-bg);   color: var(--male);   border-color: var(--male); }
+.card-avatar.female { background: var(--female-bg); color: var(--female); border-color: var(--female); }
+.card-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.wife-card .card-avatar { width: 44px; height: 44px; font-size: 1rem; }
+
+.card-name {
+  font-family: 'Tajawal', sans-serif;
+  font-size: .85rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.35;
+}
+.wife-card .card-name { font-size: .8rem; color: var(--female); }
+.card-dates { font-size: .68rem; color: var(--text2); }
+.wife-badge {
+  font-size: .62rem;
+  background: var(--female-bg);
+  color: var(--female);
+  border: 1px solid var(--female);
+  border-radius: 20px;
+  padding: 1px 7px;
+}
+.card-expand-btn {
+  position: relative;
+  bottom: auto; left: auto;
+  transform: none;
+  margin: 4px auto 0;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .85rem;
+  cursor: pointer;
+  z-index: 5;
+  transition: all .18s;
+}
+.card-expand-btn:hover { background: var(--accent); color: #fff; }
+.card-admin-btns { display: flex; gap: 3px; margin-top: 2px; justify-content: center; }
+.deceased-badge {
+  font-size: .62rem;
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+  border-radius: 20px;
+  padding: 1px 7px;
+}
+
+/* ─── SIDEBAR (الشريط الجانبي) ──────────────────── */
+.sidebar {
+  position: fixed;
+  right: 0; top: 60px;
+  width: 320px; height: calc(100vh - 60px);
+  background: var(--surface);
+  border-left: 2px solid var(--accent);
+  z-index: 90;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform .28s ease;
+  display: flex;
+  flex-direction: column;
+  direction: rtl;
+  box-shadow: -4px 0 20px rgba(0,0,0,.08);
+}
+.sidebar.open { transform: translateX(0); }
+.sidebar-header {
+  padding: 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface2);
+}
+.sidebar-body { padding: 18px; flex: 1; }
+.sidebar-avatar {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-family: 'Tajawal', sans-serif;
+}
+.sidebar-avatar.male   { background: var(--male-bg);   color: var(--male); }
+.sidebar-avatar.female { background: var(--female-bg); color: var(--female); }
+.sidebar-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.profile-name { font-family: 'Tajawal', sans-serif; font-size: 1.2rem; font-weight: 700; }
+.info-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: .84rem;
+  align-items: baseline;
+  padding: 8px 10px;
+  background: var(--surface2);
+  border-radius: 8px;
+  border-right: 3px solid var(--accent);
+}
+.info-label { color: var(--text2); min-width: 80px; font-weight: 600; }
+.info-val { color: var(--text); font-weight: 700; }
+.bio-text {
+  font-size: .86rem;
+  line-height: 1.8;
+  color: var(--text2);
+  padding: 12px;
+  background: var(--surface2);
+  border-radius: 8px;
+  border-right: 3px solid var(--accent);
+  margin-bottom: 14px;
+}
+.section-title {
+  font-family: 'Tajawal', sans-serif;
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 16px 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1.5px solid var(--border);
+}
+
+/* ─── STATS BAR (شريط الإحصائيات) ───────────────── */
+.stats-bar {
+  background: var(--surface);
+  border-top: 1.5px solid var(--border);
+  padding: 9px 20px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: .8rem;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 80;
+}
+.stat { display: flex; gap: 5px; align-items: center; }
+.stat strong { color: var(--accent); }
+
+/* ─── BREADCRUMB ─────────────────────────────────── */
+.breadcrumb {
+  padding: 7px 20px;
+  display: flex;
+  gap: 5px;
+  font-size: .8rem;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  direction: rtl;
+}
+.breadcrumb span { cursor: pointer; color: var(--accent); font-weight: 600; }
+.breadcrumb .sep { opacity: .4; cursor: default; }
+
+/* ─── MODAL (نافذة إضافة/تعديل) ──────────────────── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.55);
+  z-index: 300;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.visible { display: flex; }
+.modal {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  width: 100%; max-width: 470px;
+  max-height: 90vh;
+  overflow-y: auto;
+  direction: rtl;
+}
+.modal-header {
+  padding: 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  background: var(--surface2);
+}
+.modal-title { font-family: 'Tajawal', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+.modal-body { padding: 18px; }
+.modal-footer {
+  padding: 14px 18px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  background: var(--surface2);
+}
+.form-group { margin-bottom: 14px; }
+.form-label {
+  display: block;
+  font-size: .8rem;
+  color: var(--text2);
+  margin-bottom: 5px;
+  font-weight: 700;
+}
+.form-input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--text);
+  font-size: .88rem;
+  outline: none;
+  direction: rtl;
+}
+.form-input:focus { border-color: var(--accent); background: var(--surface); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* ─── LOGIN (شاشة الدخول) ───────────────────────── */
+.login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+}
+.login-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%; max-width: 380px;
+}
+.login-title {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 4px;
+  color: var(--accent);
+}
+.login-sub { text-align: center; color: var(--text2); margin-bottom: 28px; }
+.login-error {
+  background: rgba(220,38,38,.08);
+  border: 1px solid rgba(220,38,38,.4);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: .85rem;
+  color: #dc2626;
+  margin-bottom: 12px;
+  display: none;
+}
+.login-error.visible { display: block; }
+.login-hint { text-align: center; color: var(--text2); font-size: .78rem; margin-top: 14px; }
+
+/* ─── MISC ───────────────────────────────────────── */
+.tag {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: .72rem;
+}
+.badge.admin { background: var(--accent-light); color: var(--accent); border: 1px solid rgba(184,134,11,.3); }
+.photo-upload-area {
+  border: 2px dashed var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+  cursor: pointer;
+  background: var(--surface2);
+}
+.photo-upload-area img { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; margin: 0 auto 8px; display: block; }
+
+/* ─── HELP (نافذة المساعدة) ──────────────────────── */
+.help-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.6);
+  z-index: 400;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.help-overlay.visible { display: flex; }
+.help-box {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 28px;
+  max-width: 480px;
+  direction: rtl;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.help-box h2 { font-family: 'Tajawal', sans-serif; color: var(--accent); margin-bottom: 20px; text-align: center; }
+.help-item { display: flex; gap: 14px; margin-bottom: 16px; padding: 12px; background: var(--surface2); border-radius: 10px; }
+.help-icon { font-size: 1.6rem; }
+.help-text h3 { font-size: .9rem; font-weight: 700; }
+.help-text p { font-size: .82rem; color: var(--text2); }
+
+/* ─── LEGEND (المفتاح) ───────────────────────────── */
+.legend {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 8px 14px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  font-size: .78rem;
+  direction: rtl;
+}
+.legend-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-left: 4px; }
+.legend-dot.male   { background: var(--male); }
+.legend-dot.female { background: var(--female); }
+.legend-line { width: 20px; height: 2px; background: var(--couple-line); display: inline-block; margin-left: 4px; }
+
+/* ─── APP SHELL ──────────────────────────────────── */
+.app { display: flex; flex-direction: column; min-height: 100vh; }
+
+/* ─── RESPONSIVE ─────────────────────────────────── */
+@media (max-width: 600px) {
+  .card { width: 100px; }
+  .wife-card { width: 95px; }
+  .card-avatar { width: 42px; height: 42px; }
+  .children-row .card { width: 80px; }
+  .children-row .card-avatar { width: 36px; height: 36px; }
+}

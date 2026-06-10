@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>اللقاء العائلي – عائلة حمو بن سليمان</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ===== إخفاء شريط التمرير ===== */
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  *::-webkit-scrollbar {
+    display: none;
+  }
+
+  :root {
+    --gold: #b8860b;
+    --gold-light: #f5e6a3;
+    --gold-mid: #3a2d0f;
+    --teal: #051914;
+    --teal-light: #e1f5ee;
+    --bg: #187ba50c;
+    --card-bg: #ffffff;
+    --text: #1b1010;
+    --text-muted: #5a5a5a;
+    --border: rgba(0,0,0,0.1);
+    --radius: 12px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .page { display: none; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* header */
+  .site-header {
+    background: linear-gradient(135deg, #0a3d2b 0%, #1a6b4a 50%, #0f5c3a 100%);
+    color: #fff;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 3px solid var(--gold-mid);
+  }
+  .site-header h1 { font-size: 16px; }
+  .site-header .subtitle { font-size: 11px; }
+  .back-btn {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    padding: 5px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    display: none;
+  }
+  .back-btn.visible { display: block; }
+
+  /* hero */
+  .home-hero {
+    background: linear-gradient(160deg, #0a3d2b 0%, #1a6b4a 60%, #0f5c3a 100%);
+    color: #fff;
+    text-align: center;
+    padding: 2rem 1rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .home-hero .ornament { font-size: 28px; }
+  .home-hero h2 { font-size: 22px; }
+  .home-hero p { font-size: 13px; }
+  .gold-divider {
+    width: 60px; height: 2px;
+    background: var(--gold-mid);
+    margin: 0.8rem auto;
+  }
+
+  /* tree */
+  .tree-wrap {
+    padding: 1.5rem 0.5rem 2rem;
+    overflow-x: auto;
+  }
+  .tree-inner {
+    min-width: 900px;
+    margin: 0 auto;
+  }
+  .root-section { display: flex; justify-content: center; }
+  .root-card-wrap { display: flex; flex-direction: column; align-items: center; }
+  .vline { width: 2px; height: 35px; background: var(--gold-mid); margin-top: 5px; }
+  .hline-row {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: 5px;
+  }
+  .hline-row::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gold-mid);
+  }
+  .child-branch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    padding: 0 5px;
+    position: relative;
+  }
+  .child-branch::before {
+    content: '';
+    width: 2px;
+    height: 30px;
+    background: var(--gold-mid);
+    position: absolute;
+    top: 0;
+  }
+
+  /* cards */
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 0.8rem 0.6rem;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    position: relative;
+    margin-top: 35px;
+    width: 100%;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: var(--gold-mid); }
+  .card.root-card {
+    margin-top: 0;
+    border: 2px solid var(--gold-mid);
+    min-width: 200px;
+    background: linear-gradient(135deg, #fff, #fdf8ee);
+  }
+  .card.child-card {
+    min-width: 140px;
+    max-width: 160px;
+  }
+  .card-avatar {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 auto 8px;
+    border: 2px solid var(--gold-light);
+    overflow: hidden;
+    background: #f0f0f0;
+  }
+  .card-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .card.root-card .card-avatar { width: 80px; height: 80px; font-size: 28px; }
+  .card.child-card .card-avatar { background: var(--teal-light); color: var(--teal); }
+  .card-name { font-weight: 700; font-size: 13px; }
+  .card-dates { font-size: 10px; color: var(--text-muted); margin-top: 3px; }
+  .card-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-top: 5px;
+    display: inline-block;
+  }
+  .card.root-card .card-badge { background: #fdf3cd; color: var(--gold); }
+  .card.child-card .card-badge { background: var(--teal-light); color: var(--teal); }
+  .click-hint { font-size: 9px; margin-top: 5px; opacity: 0.6; }
+  .card-btns { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+  .btn-detail, .btn-family {
+    border-radius: 6px; padding: 4px 6px;
+    font-size: 10px;
+    font-weight: 700;
+    width: 100%;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-detail { background: var(--teal-light); color: var(--teal); }
+  .btn-family { background: #fdf3cd; color: var(--gold); }
+
+  /* detail page */
+  .detail-hero {
+    background: linear-gradient(135deg, #0a3d2b 0%, #1a6b4a 100%);
+    color: #fff;
+    text-align: center;
+    padding: 1.5rem 1rem;
+    border-bottom: 3px solid var(--gold-mid);
+  }
+  .photo-container {
+    width: 130px;
+    height: 130px;
+    margin: 0 auto 0.8rem;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: 3px solid var(--gold-mid);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .photo-container img { width: 100%; height: 100%; object-fit: cover; }
+  .photo-placeholder { font-size: 40px; color: var(--gold-light); }
+  .photo-buttons { display: flex; gap: 10px; justify-content: center; margin-top: 12px; }
+  .photo-btn {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.4);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 30px;
+    font-size: 11px;
+    font-family: 'Tajawal', sans-serif;
+    cursor: pointer;
+  }
+  .photo-btn:hover { background: rgba(255,255,255,0.35); }
+  .delete-photo { background: rgba(180,60,50,0.7); }
+  .detail-name { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+  .detail-dates {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 4px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+  }
+  .detail-body { max-width: 780px; margin: 0 auto; padding: 1.5rem 1rem; }
+  .section-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    margin-bottom: 1.2rem;
+    overflow: hidden;
+  }
+  .section-head {
+    background: linear-gradient(90deg, #0a3d2b, #1a6b4a);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-body { padding: 0.8rem 1rem; }
+  .wives-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .wife-chip {
+    background: var(--teal-light);
+    border-radius: 8px;
+    padding: 6px 8px;
+    font-size: 12px;
+    color: var(--teal);
+  }
+  .bio-text { font-size: 13px; line-height: 1.7; color: var(--text); }
+  .btn-family-detail {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fdf3cd;
+    color: var(--gold);
+    border: 1px solid rgba(184,134,11,0.3);
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 0.8rem;
+  }
+  footer { background: #0a3d2b; color: rgba(255,255,255,0.6); text-align: center; padding: 0.8rem; font-size: 10px; }
+  @media (max-width: 640px) {
+    .wives-grid { grid-template-columns: 1fr; }
+    .tree-inner { min-width: 800px; }
+    .card-avatar { width: 55px; height: 55px; font-size: 18px; }
+    .card.root-card .card-avatar { width: 70px; height: 70px; }
+    .photo-container { width: 110px; height: 110px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div><div class="subtitle">اللقاء العائلي</div><h1>عائلة حمو بن سليمان</h1></div>
+  <button class="back-btn" id="backBtn" onclick="showHome()">→ الرئيسية</button>
+</header>
+
+<!-- ========= الصفحة الرئيسية ========= -->
+<div class="page active" id="page-home">
+  <div class="tree-wrap">
+    <div class="tree-inner">
+      <div class="root-section">
+        <div class="root-card-wrap">
+          <div class="card root-card" onclick="showDetail('hamo')">
+            <div class="card-avatar" id="avatar_hamo">ح.إ</div>
+            <div class="card-name">حاج إبراهيم حمو بن سليمان</div>
+            <div class="card-dates">عاش 113 سنة • توفي في شعبان</div>
+            <span class="card-badge">الجد الأكبر</span>
+            <div class="click-hint">اضغط لعرض التفاصيل</div>
+          </div>
+          <div class="vline"></div>
+        </div>
+      </div>
+      <div class="hline-row">
+        <div class="child-branch"><div class="card child-card"><div class="card-avatar" id="avatar_muhammad">م</div><div class="card-name">محمد بن حمو</div><div class="card-dates">1890–1967</div><span class="card-badge">الابن الأول</span><div class="card-btns"><button class="btn-detail" onclick="showDetail('muhammad')">📋 السيرة</button><button class="btn-family" onclick="showFamilyPage('muhammad')">👨‍👩‍👧‍👦 العائلة</button></div></div></div>
+        <div class="child-branch"><div class="card child-card"><div class="card-avatar" id="avatar_menna">👩</div><div class="card-name">منة بنت حمو</div><div class="card-dates">1896–1971</div><span class="card-badge">البنت</span><div class="card-btns"><button class="btn-detail" onclick="showDetail('menna')">📋 السيرة</button><button class="btn-family" onclick="showFamilyPage('menna')">👨‍👩‍👧‍👦 العائلة</button></div></div></div>
+        <div class="child-branch"><div class="card child-card"><div class="card-avatar" id="avatar_bahoun">هـ</div><div class="card-name">بهون بن حمو</div><div class="card-dates">1899–1983</div><span class="card-badge">الابن الثاني</span><div class="card-btns"><button class="btn-detail" onclick="showDetail('bahoun')">📋 السيرة</button><button class="btn-family" onclick="showFamilyPage('bahoun')">👨‍👩‍👧‍👦 العائلة</button></div></div></div>
+        <div class="child-branch"><div class="card child-card"><div class="card-avatar" id="avatar_omar">ع</div><div class="card-name">عمر بن حمو</div><div class="card-dates">1903–1972</div><span class="card-badge">الابن الثالث</span><div class="card-btns"><button class="btn-detail" onclick="showDetail('omar')">📋 السيرة</button><button class="btn-family" onclick="showFamilyPage('omar')">👨‍👩‍👧‍👦 العائلة</button></div></div></div>
+        <div class="child-branch"><div class="card child-card"><div class="card-avatar" id="avatar_bakir">ب</div><div class="card-name">بكير بن حمو</div><div class="card-dates">1906–1998</div><span class="card-badge">الابن الرابع</span><div class="card-btns"><button class="btn-detail" onclick="showDetail('bakir')">📋 السيرة</button><button class="btn-family" onclick="showFamilyPage('bakir')">👨‍👩‍👧‍👦 العائلة</button></div></div></div>
+        <div class="child-branch"><div class="card child-card"><div class="card-avatar" id="avatar_ibrahim2">إ</div><div class="card-name">إبراهيم بن حمو</div><div class="card-dates">1908–2006</div><span class="card-badge">الابن الخامس</span><div class="card-btns"><button class="btn-detail" onclick="showDetail('ibrahim2')">📋 السيرة</button><button class="btn-family" onclick="showFamilyPage('ibrahim2')">👨‍👩‍👧‍👦 العائلة</button></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========= صفحات التفاصيل (السير الذاتية) ========= -->
+<div class="page" id="page-hamo">
+  <div class="detail-hero"><div class="photo-container" id="photo_hamo_container"><div class="photo-placeholder">🖼️</div></div><div class="photo-buttons"><button class="photo-btn" id="addPhotoBtn_hamo">📷 إضافة صورة</button><button class="photo-btn delete-photo" id="delPhotoBtn_hamo">🗑️ حذف الصورة</button></div><div class="detail-name">حاج إبراهيم حمو بن سليمان</div><div class="detail-dates">الجد الأكبر • عاش 113 سنة</div></div>
+  <div class="detail-body"><div class="section-card"><div class="section-head"><span class="icon">📜</span> نبذة تاريخية</div><div class="section-body"><p class="bio-text">والده سليمان عاش 113 سنة، ويروى أنه في العام الذي توفي فيه صلى في ليلة 15 من شعبان بمسجد أبي سالم مئة ركعة... كان تاجراً في تيارت، وكانت الظروف الاقتصادية صعبة.</p></div></div><div class="section-card"><div class="section-head"><span class="icon">👥</span> الأبناء والبنات</div><div class="section-body"><div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px;"><div class="wife-chip">محمد (1890–1967)</div><div class="wife-chip">منة (1896–1971)</div><div class="wife-chip">بهون (1899–1983)</div><div class="wife-chip">عمر (1903–1972)</div><div class="wife-chip">بكير (1906–1998)</div><div class="wife-chip">إبراهيم (1908–2006)</div></div></div></div><div class="section-card"><div class="section-head"><span class="icon">🤲</span> دعاء</div><div class="section-body"><p class="bio-text" style="text-align:center;">رحمه الله وجمعنا به في جنات النعيم</p></div></div></div>
+</div>
+
+<div class="page" id="page-muhammad"><div class="detail-hero"><div class="photo-container" id="photo_muhammad_container"><div class="photo-placeholder">🖼️</div></div><div class="photo-buttons"><button class="photo-btn" id="addPhotoBtn_muhammad">📷 إضافة صورة</button><button class="photo-btn delete-photo" id="delPhotoBtn_muhammad">🗑️ حذف الصورة</button></div><div class="detail-name">محمد بن حمو</div><div class="detail-dates">1890–1967</div></div><div class="detail-body"><div class="section-card"><div class="section-head"><span class="icon">💑</span> الزوجات</div><div class="section-body"><div class="wives-grid"><div class="wife-chip">عائشة</div><div class="wife-chip">إسماوي فافة بنت محمد</div></div></div></div><div class="section-card"><div class="section-head"><span class="icon">📜</span> السيرة</div><div class="section-body"><p class="bio-text">ولد سنة 1890 وتوفي سنة 1967 بالعطف.<br>تزوج الكريمة عائشة، أنجب منها ذكراً وتوفي. تزوج ثانية إسماوي فافة بنت محمد، وأنجبا بنت أسلة مربامه... اشتغل كصانع في تيارت، ثم فتح محلاً في يوسعادة، ثم عاد للفلاحة بأولاوال. عضو حلقة العزابة بمسجد العتيق وشغل وكيلاً للمسجد. تبرع بنصف منزله لتوسعة المسجد. توفي في حادث مرور.</p></div></div><div style="text-align:center;"><button class="btn-family-detail" onclick="showFamilyPage('muhammad')">👨‍👩‍👧‍👦 عرض عائلة الابن محمد</button></div></div></div>
+
+<div class="page" id="page-bakir"><div class="detail-hero"><div class="photo-container" id="photo_bakir_container"><div class="photo-placeholder">🖼️</div></div><div class="photo-buttons"><button class="photo-btn" id="addPhotoBtn_bakir">📷 إضافة صورة</button><button class="photo-btn delete-photo" id="delPhotoBtn_bakir">🗑️ حذف الصورة</button></div><div class="detail-name">بكير بن حمو</div><div class="detail-dates">1906–1998</div></div><div class="detail-body"><div class="section-card"><div class="section-head"><span class="icon">💑</span> الزوجات</div><div class="section-body"><div class="wives-grid"><div class="wife-chip">بية بنت محمد</div><div class="wife-chip">عائشة بنت بكير</div></div></div></div><div class="section-card"><div class="section-head"><span class="icon">📜</span> السيرة</div><div class="section-body"><p class="bio-text">حفظ القرآن، سافر للعمل بتيارت ثم الجزائر العاصمة، ساهم في الثورة، تعرض للتعذيب من OAS. كان من عمار المسجد، حج ثلاث مرات، توفي عام 1998.</p></div></div><div style="text-align:center;"><button class="btn-family-detail" onclick="showFamilyPage('bakir')">👨‍👩‍👧‍👦 عرض عائلة الابن بكير</button></div></div></div>
+
+<div class="page" id="page-ibrahim2"><div class="detail-hero"><div class="photo-container" id="photo_ibrahim2_container"><div class="photo-placeholder">🖼️</div></div><div class="photo-buttons"><button class="photo-btn" id="addPhotoBtn_ibrahim2">📷 إضافة صورة</button><button class="photo-btn delete-photo" id="delPhotoBtn_ibrahim2">🗑️ حذف الصورة</button></div><div class="detail-name">إبراهيم بن حمو</div><div class="detail-dates">1908–2006</div></div><div class="detail-body"><div class="section-card"><div class="section-head"><span class="icon">💑</span> الزوجات</div><div class="section-body"><div class="wives-grid"><div class="wife-chip">عائشة بنت محمد</div><div class="wife-chip">رحيمة بنت إبراهيم</div></div></div></div><div class="section-card"><div class="section-head"><span class="icon">📜</span> السيرة</div><div class="section-body"><p class="bio-text">عمل في يوسعادة والجزائر العاصمة، ثم في الفلاحة. عضو حلقة العزابة، كان يؤم الناس. عرف بـ"يابابني".</p></div></div><div style="text-align:center;"><button class="btn-family-detail" onclick="showFamilyPage('ibrahim2')">👨‍👩‍👧‍👦 عرض عائلة الابن إبراهيم</button></div></div></div>
+
+<div class="page" id="page-omar"><div class="detail-hero"><div class="photo-container" id="photo_omar_container"><div class="photo-placeholder">🖼️</div></div><div class="photo-buttons"><button class="photo-btn" id="addPhotoBtn_omar">📷 إضافة صورة</button><button class="photo-btn delete-photo" id="delPhotoBtn_omar">🗑️ حذف الصورة</button></div><div class="detail-name">عمر بن حمو</div><div class="detail-dates">1903–1972</div></div><div class="detail-body"><div class="section-card"><div class="section-head"><span class="icon">💑</span> الزوجات</div><div class="section-body"><div class="wives-grid"><div class="wife-chip">مسعودة</div><div class="wife-chip">فافة بنت عمر</div></div></div></div><div class="section-card"><div class="section-head"><span class="icon">📜</span> السيرة</div><div class="section-body"><p class="bio-text">من رجالات الجزائر، عاصر الاستعمار، كان داعماً للثورة، توفي 1972.</p></div></div><div style="text-align:center;"><button class="btn-family-detail" onclick="showFamilyPage('omar')">👨‍👩‍👧‍👦 عرض عائلة الابن عمر</button></div></div></div>
+
+<div class="page" id="page-bahoun"><div class="detail-hero"><div class="photo-container" id="photo_bahoun_container"><div class="photo-placeholder">🖼️</div></div><div class="photo-buttons"><button class="photo-btn" id="addPhotoBtn_bahoun">📷 إضافة صورة</button><button class="photo-btn delete-photo" id="delPhotoBtn_bahoun">🗑️ حذف الصورة</button></div><div class="detail-name">بهون بن حمو</div><div class="detail-dates">1899–1983</div></div><div class="detail-body"><div class="section-card"><div class="section-head"><span class="icon">💑</span> الزوجات</div><div class="section-body"><div class="wives-grid"><div class="wife-chip">منة بنت صالح</div><div class="wife-chip">مسعودة بنت عمر</div></div></div></div><div class="section-card"><div class="section-head"><span class="icon">📜</span> السيرة</div><div class="section-body"><p class="bio-text">عمل بمسعد والجلمة، بنى منزله بالعطف، كان الذراع الأيمن لإخوته.</p></div></div><div style="text-align:center;"><button class="btn-family-detail" onclick="showFamilyPage('bahoun')">👨‍👩‍👧‍👦 عرض عائلة الابن بهون</button></div></div></div>
+
+<div class="page" id="page-menna"><div class="detail-hero"><div class="photo-container" id="photo_menna_container"><div class="photo-placeholder">🖼️</div></div><div class="photo-buttons"><button class="photo-btn" id="addPhotoBtn_menna">📷 إضافة صورة</button><button class="photo-btn delete-photo" id="delPhotoBtn_menna">🗑️ حذف الصورة</button></div><div class="detail-name">منة بنت حمو</div><div class="detail-dates">1896–1971</div></div><div class="detail-body"><div class="section-card"><div class="section-head"><span class="icon">💑</span> الزوج والذرية</div><div class="section-body"><div class="wives-grid"><div class="wife-chip">الزوج: بهون علي سليمان</div><div class="wife-chip">الابن: عمر (بهون علي)</div></div></div></div><div class="section-card"><div class="section-head"><span class="icon">📜</span> سيرتها</div><div class="section-body"><p class="bio-text">عُرفت بعمارتها للمسجد، وبأخلاقها وحبها وإحسانها، وبتسلفها للنخيل. توفيت ليلة المولد النبوي رحمها الله.</p></div></div><div style="text-align:center;"><button class="btn-family-detail" onclick="showFamilyPage('menna')">👨‍👩‍👧‍👦 عرض عائلة البنت</button></div></div></div>
+
+<script>
+  // ========= دوال الصور =========
+  function savePhoto(personId, imageData) { localStorage.setItem('photo_' + personId, imageData); }
+  function loadPhoto(personId) { return localStorage.getItem('photo_' + personId); }
+  function updateHomeAvatar(personId, avatarElementId) {
+    const avatarDiv = document.getElementById(avatarElementId);
+    if (!avatarDiv) return;
+    const saved = loadPhoto(personId);
+    if (saved) {
+      avatarDiv.innerHTML = `<img src="${saved}" alt="صورة">`;
+      avatarDiv.style.background = "none";
+      avatarDiv.style.color = "transparent";
+    } else {
+      const defaultText = { 'hamo': 'ح.إ', 'muhammad': 'م', 'menna': '👩', 'bahoun': 'هـ', 'omar': 'ع', 'bakir': 'ب', 'ibrahim2': 'إ' };
+      avatarDiv.innerHTML = defaultText[personId] || '?';
+      avatarDiv.style.background = "";
+      avatarDiv.style.color = "";
+    }
+  }
+  function displayDetailPhoto(personId, containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const saved = loadPhoto(personId);
+    if (saved) container.innerHTML = `<img src="${saved}" alt="صورة">`;
+    else container.innerHTML = `<div class="photo-placeholder">🖼️</div>`;
+  }
+  function setupPhotoUpload(personId, containerId, avatarElementId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const addBtn = document.getElementById(`addPhotoBtn_${personId}`);
+    const delBtn = document.getElementById(`delPhotoBtn_${personId}`);
+    if (addBtn) {
+      const newAddBtn = addBtn.cloneNode(true);
+      addBtn.parentNode.replaceChild(newAddBtn, addBtn);
+      newAddBtn.addEventListener('click', () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              savePhoto(personId, ev.target.result);
+              displayDetailPhoto(personId, containerId);
+              if (avatarElementId) updateHomeAvatar(personId, avatarElementId);
+            };
+            reader.readAsDataURL(file);
+          }
+        };
+        input.click();
+      });
+    }
+    if (delBtn) {
+      const newDelBtn = delBtn.cloneNode(true);
+      delBtn.parentNode.replaceChild(newDelBtn, delBtn);
+      newDelBtn.addEventListener('click', () => {
+        localStorage.removeItem('photo_' + personId);
+        displayDetailPhoto(personId, containerId);
+        if (avatarElementId) updateHomeAvatar(personId, avatarElementId);
+      });
+    }
+    displayDetailPhoto(personId, containerId);
+  }
+  function initHomeAvatars() {
+    const mapping = { 'hamo': 'avatar_hamo', 'muhammad': 'avatar_muhammad', 'menna': 'avatar_menna', 'bahoun': 'avatar_bahoun', 'omar': 'avatar_omar', 'bakir': 'avatar_bakir', 'ibrahim2': 'avatar_ibrahim2' };
+    for (const [personId, avatarId] of Object.entries(mapping)) updateHomeAvatar(personId, avatarId);
+  }
+
+  // ========= دوال التنقل =========
+  function showHome() {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-home').classList.add('active');
+    document.getElementById('backBtn').classList.remove('visible');
+    initHomeAvatars();
+    window.scrollTo(0, 0);
+  }
+  function showDetail(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    document.getElementById('backBtn').classList.add('visible');
+    window.scrollTo(0, 0);
+    const mapping = {
+      'hamo':     { container: 'photo_hamo_container',     avatar: 'avatar_hamo' },
+      'muhammad': { container: 'photo_muhammad_container', avatar: 'avatar_muhammad' },
+      'bakir':    { container: 'photo_bakir_container',    avatar: 'avatar_bakir' },
+      'ibrahim2': { container: 'photo_ibrahim2_container', avatar: 'avatar_ibrahim2' },
+      'omar':     { container: 'photo_omar_container',     avatar: 'avatar_omar' },
+      'bahoun':   { container: 'photo_bahoun_container',   avatar: 'avatar_bahoun' },
+      'menna':    { container: 'photo_menna_container',    avatar: 'avatar_menna' }
+    };
+    if (mapping[id]) setupPhotoUpload(id, mapping[id].container, mapping[id].avatar);
+  }
+  function showFamilyPage(id) {
+    let url = '';
+    switch(id) {
+      case 'muhammad': url = 'moh/moh.html'; break;
+      case 'menna':    url = 'menna/menna.html'; break;
+      case 'bahoun':   url = 'bouhon/bouhon.html'; break;
+      case 'omar':     url = 'omar/omar.html'; break;
+      case 'bakir':    url = 'bakir/bakir.html'; break;
+      case 'ibrahim2': url = 'brahim/brahim.html'; break;
+      default: url = '#';
+    }
+    window.location.href = url;
+  }
+
+  window.addEventListener('DOMContentLoaded', initHomeAvatars);
+</script>
+
+</body>
+</html>

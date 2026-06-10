@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>شجرة عائلة حاج ابراهيم بكير بن حمو</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="mainApp" class="app" style="display:flex">
+  <header class="header">
+    <div class="header-logo">
+      <svg width="26" height="26" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.6">
+        <circle cx="14" cy="5" r="3.5"/>
+        <circle cx="5" cy="20" r="3"/>
+        <circle cx="23" cy="20" r="3"/>
+        <line x1="14" y1="8.5" x2="14" y2="13.5"/>
+        <line x1="14" y1="13.5" x2="5" y2="17"/>
+        <line x1="14" y1="13.5" x2="23" y2="17"/>
+      </svg>
+      شجرة عائلة حاج ابراهيم بكير بن حمو
+    </div>
+    <div class="header-actions">
+      <button id="addRootMemberBtn" class="btn sm primary" style="display:none" onclick="openAddModal(appState.data.rootId)">＋ إضافة عضو</button>
+      <button id="addRootParentBtn" class="btn sm" style="display:none" onclick="openAddParentModal()">⬆ إضافة جد</button>
+      <span id="adminBadge" class="badge admin" style="display:none">⚙ مدير</span>
+      <div class="search-wrap">
+        <input id="searchInput" placeholder="🔍 ابحث عن شخص…" oninput="handleSearch()" onfocus="showSearchResults()" onblur="hideSearchResultsDelay()">
+        <div id="searchResults" class="search-results"></div>
+      </div>
+      <button id="adminSwitchBtn" class="btn sm" style="background:var(--accent); color:#fff;">👑 تبديل للمدير</button>
+      <button class="btn icon-btn" onclick="showHelp()">❓</button>
+      <button class="btn icon-btn" onclick="doLogout()">🚪</button>
+    </div>
+  </header>
+
+  <div class="legend">
+    <span style="font-weight:700;">المفتاح:</span>
+    <span><span class="legend-dot male"></span> رجل</span>
+    <span><span class="legend-dot female"></span> امرأة / زوجة</span>
+    <span><span class="legend-line"></span> خط الزواج</span>
+  </div>
+
+  <nav id="breadcrumbBar" class="breadcrumb" style="display:none"></nav>
+
+  <main class="main" onclick="deselectMember()" style="padding-bottom:50px">
+    <div class="tree-viewport" id="treeViewport" onclick="event.stopPropagation()"></div>
+  </main>
+
+  <footer class="stats-bar" id="statsBar"></footer>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header" id="sidebarHeader"></div>
+    <div class="sidebar-body" id="sidebarBody"></div>
+  </aside>
+</div>
+
+<!-- Modal -->
+<div id="modalOverlay" class="modal-overlay" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">إضافة عضو جديد</div>
+      <button class="btn icon-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <div class="photo-upload-area" id="photoUploadArea" onclick="document.getElementById('photoFileInput').click()">
+          <div style="font-size:2rem;">📷</div>
+          <div>انقر لإضافة صورة</div>
+        </div>
+        <input id="photoFileInput" type="file" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)">
+      </div>
+      <div class="form-group">
+        <label class="form-label">الاسم الكامل *</label>
+        <input id="formName" class="form-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label">الجنس</label>
+        <select id="formGender" class="form-input">
+          <option value="male">👨 ذكر</option>
+          <option value="female">👩 أنثى</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">سنة الميلاد</label>
+          <input id="formBirth" class="form-input" type="number">
+        </div>
+        <div class="form-group">
+          <label class="form-label">سنة الوفاة</label>
+          <input id="formDeath" class="form-input" type="number">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ملاحظات</label>
+        <textarea id="formBio" class="form-input"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn primary" onclick="saveModal()">✔ حفظ</button>
+      <button class="btn" onclick="closeModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- Help -->
+<div id="helpOverlay" class="help-overlay" onclick="hideHelp()">
+  <div class="help-box" onclick="event.stopPropagation()">
+    <h2>📖 كيفية استخدام الشجرة</h2>
+    <div class="help-item"><div class="help-icon">👆</div><div class="help-text"><h3>عرض التفاصيل</h3><p>انقر على أي شخص لعرض معلوماته كاملة.</p></div></div>
+    <div class="help-item"><div class="help-icon">⬇</div><div class="help-text"><h3>فتح عائلة الابن</h3><p>الزر ▼ أسفل بطاقة أي شخص يعرض أبناءه.</p></div></div>
+    <div class="help-item"><div class="help-icon">💑</div><div class="help-text"><h3>الزوج والزوجة</h3><p>بطاقة الزوجة بجانب بطاقة الزوج بخط ذهبي.</p></div></div>
+    <div class="help-item"><div class="help-icon">🔍</div><div class="help-text"><h3>البحث</h3><p>استخدم خانة البحث للعثور على أي شخص.</p></div></div>
+    <button class="btn primary" style="width:100%;margin-top:8px" onclick="hideHelp()">فهمت ✔</button>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
